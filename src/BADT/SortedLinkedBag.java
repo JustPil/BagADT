@@ -252,15 +252,21 @@ public class SortedLinkedBag implements BagInterface
      */
     public String toString()
     {
-        String str = "[";
+        StringBuilder str = new StringBuilder("[");
         parser = head;
         while(parser != null)
         {
-            String spacing = parser.getNext() == null ? "" : " ";
-            str += parser.getData() + spacing;
+            if(parser.getNext() == null)
+            {
+                str.append(parser.getData());
+            }
+            else
+            {
+                str.append(parser.getData()).append(" ");
+            }
             parser = parser.getNext();
         }
-        return str + "]";
+        return str.append("]").toString();
     }
 }
 
