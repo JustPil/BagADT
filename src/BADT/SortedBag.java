@@ -237,12 +237,12 @@ public class SortedBag implements BagInterface
      */
     public String toString()
     {
-        String str = "[";
+        StringBuilder str = new StringBuilder("[");
         for(int i = 0; i < totalItems; i++)
         {
-            str += array[i];
-            str += i != totalItems - 1 ? " " : "";
+            str.append(array[i]);
+            str.append(i != totalItems - 1 ? " " : "");
         }
-        return str + "]";
+        return str.append("]").toString();
     }
 }
