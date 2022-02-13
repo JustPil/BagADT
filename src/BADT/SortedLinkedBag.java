@@ -1,22 +1,38 @@
 package BADT;
 
+import java.util.Comparator;
 import java.util.Random;
 
-public class SortedLinkedBag implements BagInterface
+public class SortedLinkedBag<T> implements BagInterface<T>
 {
-    private Node head;
-    private Node parser;
+    private Node<T> head;
+    private Node<T> parser;
     private int totalNodes = 0;
-    Random random = new Random();
+    private Random random = new Random();
+    private Comparator<T> comp;
+
+    /**
+     * Constructor instantiates a Comparator object.
+     */
+    public SortedLinkedBag()
+    {
+        comp = new Comparator<T>()
+        {
+            public int compare(T o1, T o2)
+            {
+                return ((Comparable)o1).compareTo(o2);
+            }
+        };
+    }
 
     /**
      * add Adds an element to the linked list in sorted order.
      * @param element The data for the new node to hold.
      * @return True if the new node is successfully added, false otherwise.
      */
-    public boolean add(int element)
+    public boolean add(T element)
     {
-        Node node = new Node(element);
+        Node<T> node = new Node<>(element);
         if(totalNodes == 0)
         {
             head = node;
@@ -25,21 +41,22 @@ public class SortedLinkedBag implements BagInterface
         {
             parser = head;
             while(parser != null)
-            {
-                if(node.getData() <= head.getData() && parser == head)
+            {/*node.getData() <= head.getData()*/
+                if(comp.compare(node.getData(), head.getData()) >= 0 && parser == head)
                 {
                     node.setNext(head);
                     head = node;
                     break;
-                }
-                else if(node.getData() >= parser.getData() && parser.getNext() == null)
+                }/*node.getData() >= parser.getData()*/
+                else if(comp.compare(node.getData(), parser.getData()) <= 0 && parser.getNext() == null)
                 {
                     parser.setNext(node);
                     break;
-                }
-                else if(node.getData() > parser.getData() && node.getData() <= parser.getNext().getData())
+                }/*node.getData() > parser.getData() && node.getData() <= parser.getNext().getData()*/
+                else if(comp.compare(node.getData(), parser.getData()) < 0 &&
+                        comp.compare(node.getData(), parser.getNext().getData()) >= 0)
                 {
-                    Node helper = parser.getNext();
+                    Node<T> helper = parser.getNext();
                     parser.setNext(node);
                     node.setNext(helper);
                     break;
@@ -56,12 +73,12 @@ public class SortedLinkedBag implements BagInterface
      * @param element The data to search for.
      * @return True if a Node containing the data is found, false otherwise.
      */
-    public boolean contains(int element)
+    public boolean contains(T element)
     {
         parser = head;
         while(parser != null)
         {
-            if(parser.getData() == element)
+            if(comp.compare(parser.getData(), element) == 0)
             {
                 return true;
             }
@@ -78,24 +95,25 @@ public class SortedLinkedBag implements BagInterface
      * @param element The data to search for.
      * @return True if the Node is found and removed, false otherwise.
      */
-    public boolean remove(int element)
+    public boolean remove(T element)
     {
         parser = head;
         while(parser.getNext() != null)
         {
-            if(parser.getNext().getData() == element && parser != head)
+            if(comp.compare(parser.getNext().getData(), element) == 0 && parser != head)
             {
                 parser.setNext(parser.getNext().getNext());
                 totalNodes--;
                 return true;
             }
-            else if(head.getData() == element)
+            else if(comp.compare(head.getData(), element) == 0)
             {
                 head = head.getNext();
                 totalNodes--;
                 return true;
-            }
-            else if(parser == head && parser.getNext().getData() == element && head.getData() != element)
+            }/*parser.getNext().getData() == element && head.getData() != element*/
+            else if(parser == head && comp.compare(parser.getNext().getData(), element) == 0 &&
+            comp.compare(head.getData(), element) != 0)
             {
                 parser.setNext(parser.getNext().getNext());
                 totalNodes--;
@@ -103,7 +121,7 @@ public class SortedLinkedBag implements BagInterface
             }
             parser = parser.getNext();
         }
-        if(totalNodes == 1 && head.getData() == element)
+        if(totalNodes == 1 && comp.compare(head.getData(), element) == 0)
         {
             head = null;
             totalNodes--;
@@ -143,12 +161,12 @@ public class SortedLinkedBag implements BagInterface
      * grab Grabs a random Node from the linked list.
      * @return The data contained in the randomly selected Node.
      */
-    public int grab()
+    public T grab()
     {
         int pick = random.nextInt(totalNodes);
         int tracker = 0;
         parser = head;
-        int grabbedItem = 0;
+        T grabbedItem = null;
         while(parser != null)
         {
             if(tracker == pick)
@@ -170,13 +188,13 @@ public class SortedLinkedBag implements BagInterface
      * @param element The data to search for.
      * @return The total number of occurrences of the element.
      */
-    public int count(int element)
+    public int count(T element)
     {
         parser = head;
         int counter = 0;
         while(parser != null)
         {
-            if(parser.getData() == element)
+            if(comp.compare(parser.getData(), element) == 0)
             {
                 counter++;
             }
@@ -190,7 +208,7 @@ public class SortedLinkedBag implements BagInterface
      * @param element The data to search for.
      * @return The total number of Nodes removed.
      */
-    public int removeAll(int element)
+    public int removeAll(T element)
     {
         int count = 0;
         if(totalNodes == 0)
@@ -201,21 +219,22 @@ public class SortedLinkedBag implements BagInterface
         parser = head;
         while(parser.getNext() != null)
         {
-            if(parser.getNext().getData() == element && parser != head)
+            if(comp.compare(parser.getNext().getData(), element) == 0 && parser != head)
+            {
+                parser.setNext(parser.getNext().getNext());
+                totalNodes--;
+                count++;
+                control = true;
+            }/*parser.getNext().getData() == element && head.getData() != element*/
+            else if(parser == head && comp.compare(parser.getNext().getData(), element) == 0 &&
+            comp.compare(head.getData(), element) != 0)
             {
                 parser.setNext(parser.getNext().getNext());
                 totalNodes--;
                 count++;
                 control = true;
             }
-            else if(parser == head && parser.getNext().getData() == element && head.getData() != element)
-            {
-                parser.setNext(parser.getNext().getNext());
-                totalNodes--;
-                count++;
-                control = true;
-            }
-            else if(head.getData() == element)
+            else if(comp.compare(head.getData(), element) == 0)
             {
                 head = head.getNext();
                 totalNodes--;
@@ -228,7 +247,7 @@ public class SortedLinkedBag implements BagInterface
             }
             control = false;
         }
-        if(totalNodes == 1 && head.getData() == element)
+        if(totalNodes == 1 && comp.compare(head.getData(), element) == 0)
         {
             head = null;
             totalNodes--;
