@@ -1,27 +1,42 @@
 package BADT;
 
+import java.util.Comparator;
 import java.util.Random;
 
-public class UnsortedBag implements BagInterface
+public class UnsortedBag<T> implements BagInterface<T>
 {
     private int totalItems = 0;
     private final int CAPACITY = 50;
-    private int[] array = new int[CAPACITY];
+    private T[] array = (T[])new Object[CAPACITY];
     private Random random = new Random();
+    private Comparator<T> comp;
+
+    /**
+     * Constructor instantiates a Comparator object.
+     */
+    public UnsortedBag()
+    {
+        comp = new Comparator<T>()
+        {
+            public int compare(T o1, T o2)
+            {
+                return ((Comparable)o1).compareTo(o2);
+            }
+        };
+    }
 
     /**
      * add Adds an element to the array if the array is not full.
      * @param element The element to add into the array.
      * @return True if the item is added, false if not.
      */
-    public boolean add(int element)
+    public boolean add(T element)
     {
         if(isFull())
         {
             return false;
         }
-        array[totalItems] = element;
-        totalItems++;
+        array[totalItems++] = element;
         return true;
     }
 
@@ -30,11 +45,11 @@ public class UnsortedBag implements BagInterface
      * @param element The element to search for in the array.
      * @return True if the element is found, false otherwise.
      */
-    public boolean contains(int element)
+    public boolean contains(T element)
     {
         for(int i = 0; i < totalItems; i++)
         {
-            if(array[i] == element)
+            if(comp.compare(array[i], element) == 0)
             {
                 return true;
             }
@@ -47,15 +62,14 @@ public class UnsortedBag implements BagInterface
      * @param element The element to remove.
      * @return True if the element is removed, false otherwise.
      */
-    public boolean remove(int element)
+    public boolean remove(T element)
     {
         for(int i = 0; i < totalItems; i++)
         {
-            if(array[i] == element)
+            if(comp.compare(array[i], element) == 0)
             {
                 array[i] = array[totalItems - 1];
-                array[totalItems - 1] = 0;
-                totalItems--;
+                array[totalItems-- - 1] = null;
                 return true;
             }
         }
@@ -93,10 +107,9 @@ public class UnsortedBag implements BagInterface
      * grab Grabs a random element from the array.
      * @return The randomly chosen element.
      */
-    public int grab()
+    public T grab()
     {
-        int pick = random.nextInt(totalItems);
-        return array[pick];
+        return array[random.nextInt(totalItems)];
     }
 
     /**
@@ -104,12 +117,12 @@ public class UnsortedBag implements BagInterface
      * @param element The element to be counted.
      * @return The total number of occurrences of the element.
      */
-    public int count(int element)
+    public int count(T element)
     {
         int count = 0;
         for(int i = 0; i < totalItems; i++)
         {
-            if(array[i] == element)
+            if(comp.compare(array[i], element) == 0)
             {
                 count++;
             }
@@ -122,23 +135,22 @@ public class UnsortedBag implements BagInterface
      * @param element The element to remove.
      * @return The number of removed occurrences of the element.
      */
-    public int removeAll(int element)
+    public int removeAll(T element)
     {
         int num = count(element);
         if(num >= 1)
         {
             int offset = 0;
-            int[] newArray = new int[CAPACITY];
+            T[] newArray = (T[])new Object[CAPACITY];
             for(int i = 0; i < totalItems; i++)
             {
-                if(array[i] == element)
+                if(comp.compare(array[i], element) == 0)
                 {
                     i += num - 1;
                 }
                 else
                 {
-                    newArray[offset] = array[i];
-                    offset++;
+                    newArray[offset++] = array[i];
                 }
             }
             array = newArray;
@@ -152,7 +164,7 @@ public class UnsortedBag implements BagInterface
      */
     public void clear()
     {
-        int[] newArray = new int[CAPACITY];
+        T[] newArray = (T[])new Object[CAPACITY];
         array = newArray;
         totalItems = 0;
     }
