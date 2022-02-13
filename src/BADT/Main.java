@@ -44,7 +44,7 @@ public class Main
      */
     public static void sortedBag(Scanner s)
     {
-        SortedBag bag = new SortedBag();
+        SortedBag<Integer> bag = new SortedBag<>();
         String choice = "";
         while(!choice.equalsIgnoreCase("X"))
         {
@@ -134,7 +134,7 @@ public class Main
      */
     public static void unsortedBag(Scanner s)
     {
-        UnsortedBag bag = new UnsortedBag();
+        UnsortedBag<Integer> bag = new UnsortedBag<>();
         String choice = "";
         while(!choice.equalsIgnoreCase("X"))
         {
@@ -224,7 +224,7 @@ public class Main
      */
     public static void sortedLinkedBag(Scanner s)
     {
-        SortedLinkedBag bag = new SortedLinkedBag();
+        SortedLinkedBag<Integer> bag = new SortedLinkedBag<>();
         String choice = "";
         while(!choice.equalsIgnoreCase("X"))
         {
