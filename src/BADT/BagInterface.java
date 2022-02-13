@@ -1,16 +1,16 @@
 package BADT;
 
-public interface BagInterface
+public interface BagInterface<T>
 {
-    boolean add(int element);
-    boolean contains(int element);
-    boolean remove(int element);
+    boolean add(T element);
+    boolean contains(T element);
+    boolean remove(T element);
     boolean isFull();
     boolean isEmpty();
     int size();
-    int grab();
-    int count(int element);
-    int removeAll(int element);
+    T grab();
+    int count(T element);
+    int removeAll(T element);
     void clear();
     String toString();
 }
