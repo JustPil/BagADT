@@ -3,8 +3,7 @@ package BADT;
 import java.util.Comparator;
 import java.util.Random;
 
-public class UnsortedBag<T> implements BagInterface<T>
-{
+public class UnsortedBag<T> implements BagInterface<T> {
     private int totalItems = 0;
     private final int CAPACITY = 50;
     private T[] array = (T[])new Object[CAPACITY];
@@ -14,10 +13,9 @@ public class UnsortedBag<T> implements BagInterface<T>
     /**
      * Constructor instantiates a Comparator object.
      */
-    public UnsortedBag()
-    {
-        comp = new Comparator<T>()
-        {
+    public UnsortedBag() {
+        comp = new Comparator<T>() {
+            @Override
             public int compare(T o1, T o2)
             {
                 return ((Comparable)o1).compareTo(o2);
@@ -26,14 +24,12 @@ public class UnsortedBag<T> implements BagInterface<T>
     }
 
     /**
-     * add Adds an element to the array if the array is not full.
-     * @param element The element to add into the array.
-     * @return True if the item is added, false if not.
+     * add Adds an element to the Bag's internal array if the array is not full.
+     * @param element The element to add into the Bag's internal array.
+     * @return True if the element is added, false if not.
      */
-    public boolean add(T element)
-    {
-        if(isFull())
-        {
+    public boolean add(T element) {
+        if(isFull()) {
             return false;
         }
         array[totalItems++] = element;
@@ -41,16 +37,13 @@ public class UnsortedBag<T> implements BagInterface<T>
     }
 
     /**
-     * contains Searches the array for an element.
-     * @param element The element to search for in the array.
+     * contains Searches the Bag's internal array for an element.
+     * @param element The element to search for in the Bag's internal array.
      * @return True if the element is found, false otherwise.
      */
-    public boolean contains(T element)
-    {
-        for(int i = 0; i < totalItems; i++)
-        {
-            if(comp.compare(array[i], element) == 0)
-            {
+    public boolean contains(T element) {
+        for(int i = 0; i < totalItems; i++) {
+            if(comp.compare(array[i], element) == 0) {
                 return true;
             }
         }
@@ -58,16 +51,13 @@ public class UnsortedBag<T> implements BagInterface<T>
     }
 
     /**
-     * remove Removes a specified element from the array.
+     * remove Removes a specified element from the Bag's internal array.
      * @param element The element to remove.
      * @return True if the element is removed, false otherwise.
      */
-    public boolean remove(T element)
-    {
-        for(int i = 0; i < totalItems; i++)
-        {
-            if(comp.compare(array[i], element) == 0)
-            {
+    public boolean remove(T element) {
+        for(int i = 0; i < totalItems; i++) {
+            if(comp.compare(array[i], element) == 0) {
                 array[i] = array[totalItems - 1];
                 array[totalItems-- - 1] = null;
                 return true;
@@ -77,53 +67,46 @@ public class UnsortedBag<T> implements BagInterface<T>
     }
 
     /**
-     * isFull Determines if the array is full.
-     * @return True if the array is full, false otherwise.
+     * isFull Determines if the Bag is full.
+     * @return True if the Bag is full, false otherwise.
      */
-    public boolean isFull()
-    {
+    public boolean isFull() {
         return totalItems == CAPACITY;
     }
 
     /**
-     * isEmpty Determines if the array is empty.
-     * @return True if the array is empty, false otherwise.
+     * isEmpty Determines if the Bag is empty.
+     * @return True if the Bag is empty, false otherwise.
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return totalItems == 0;
     }
 
     /**
-     * size Determines the number of elements in the array.
-     * @return The number of elements in the array.
+     * size Determines the number of elements in the Bag.
+     * @return The number of elements in the Bag.
      */
-    public int size()
-    {
+    public int size() {
         return totalItems;
     }
 
     /**
-     * grab Grabs a random element from the array.
+     * grab Grabs a pseudorandom element from the Bag.
      * @return The randomly chosen element.
      */
-    public T grab()
-    {
+    public T grab() {
         return array[random.nextInt(totalItems)];
     }
 
     /**
-     * count Counts the total number of occurrences of a specified element in the array.
+     * count Counts the total number of occurrences of a specified element in the Bag's internal array.
      * @param element The element to be counted.
      * @return The total number of occurrences of the element.
      */
-    public int count(T element)
-    {
+    public int count(T element) {
         int count = 0;
-        for(int i = 0; i < totalItems; i++)
-        {
-            if(comp.compare(array[i], element) == 0)
-            {
+        for(int i = 0; i < totalItems; i++) {
+            if(comp.compare(array[i], element) == 0) {
                 count++;
             }
         }
@@ -131,25 +114,19 @@ public class UnsortedBag<T> implements BagInterface<T>
     }
 
     /**
-     * removeAll Removes all occurrences of a specified element from the array.
+     * removeAll Removes all occurrences of a specified element from the Bag's internal array.
      * @param element The element to remove.
      * @return The number of removed occurrences of the element.
      */
-    public int removeAll(T element)
-    {
+    public int removeAll(T element) {
         int num = count(element);
-        if(num >= 1)
-        {
+        if(num >= 1) {
             int offset = 0;
             T[] newArray = (T[])new Object[CAPACITY];
-            for(int i = 0; i < totalItems; i++)
-            {
-                if(comp.compare(array[i], element) == 0)
-                {
+            for(int i = 0; i < totalItems; i++) {
+                if(comp.compare(array[i], element) == 0) {
                     i += num - 1;
-                }
-                else
-                {
+                } else {
                     newArray[offset++] = array[i];
                 }
             }
@@ -160,24 +137,21 @@ public class UnsortedBag<T> implements BagInterface<T>
     }
 
     /**
-     * clear Clears the array of all elements.
+     * clear Clears the Bag of all elements by referencing a newly created internal array.
      */
-    public void clear()
-    {
+    public void clear() {
         T[] newArray = (T[])new Object[CAPACITY];
         array = newArray;
         totalItems = 0;
     }
 
     /**
-     * toString Outputs contents of the array in a String.
-     * @return A String containing the output of the array elements.
+     * toString Outputs contents of the Bag's internal array in a String.
+     * @return A String containing the output of the Bag's elements.
      */
-    public String toString()
-    {
+    public String toString() {
         StringBuilder str = new StringBuilder("[");
-        for(int i = 0; i < totalItems; i++)
-        {
+        for(int i = 0; i < totalItems; i++) {
             str.append(array[i]);
             str.append(i != totalItems - 1 ? " " : "");
         }
